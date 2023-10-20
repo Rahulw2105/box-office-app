@@ -5,7 +5,7 @@ function Home() {
     return (
         <div>
       <Link to="/Starred">Go to Starred Page </Link>
-        </div>
+        </div> 
         
     )
 }
