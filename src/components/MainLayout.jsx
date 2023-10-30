@@ -8,7 +8,7 @@ const MainLayout =() => {
 
        <div>
 
-        <AppTitle Title = "Box-office" SubTitle = "xyz" />
+        <AppTitle Title = "Box-office" SubTitle = "" />
 
         <Nav/>
          <Outlet/>
