@@ -1,59 +1,46 @@
 import { useState } from 'react';
 
-import { searchForShow } from "./../api/tvmaze"
+import { searchForShow, searchForPeople } from './../api/tvmaze';
+import SearchForm from '../components/SearchForm';
 
 function Home() {
-  const [inputValue, setInputValue] = useState('');
-  const [apiData , setApiData ]= useState(null);
+  const [apiData, setApiData] = useState(null);
   const [apiDataError, setApiDataError] = useState(null);
+  // shows or actors based on that request we will search
 
-  console.log(apiDataError);
-
-  const handleInput = e => {
-    setInputValue(e.target.value);
-    
-  };
-
-  async  function handleClick (e) {
-    e.preventDefault();
+  async function handleClick({ q, searchOption }) {
     try {
       setApiDataError(null);
-      const result = await searchForShow(inputValue);
-   setApiData(result);
-      
+      if (searchForShow === 'shows') {
+        const result = await searchForShow(q);
+        setApiData(result);
+      } else {
+        const result = await searchForPeople(q);
+        setApiData(result);
+      }
     } catch (error) {
       setApiDataError(error);
-      
     }
-
-   
-    
   }
 
-  const renderApiData =  () => {
-
-    if(apiDataError){
-      return <div>Error occured: {apiDataError.message} </div>
+  const renderApiData = () => {
+    if (apiDataError) {
+      return <div>Error occured: {apiDataError.message} </div>;
     }
-    if(apiData) {
-      return apiData.map((data) =>  <div key = {data.show.id}>{data.show.name}</div>)
+    if (apiData) {
+      return apiData[0].show
+        ? apiData.map(data => <div key={data.show.id}>{data.show.name}</div>)
+        : apiData.map(data => (
+            <div key={data.person.id}>{data.person.name}</div>
+          ));
     }
     return null;
-
   };
 
   return (
     <div>
-      <form onSubmit={handleClick}>
-        
-        <input type="text " value={inputValue} onChange={handleInput} />
-        <button type="submit">Search </button>
-      </form>
-      <div>
-        {renderApiData()}
-
-      </div>
-
+      <SearchForm handleClick={handleClick} />
+      <div>{renderApiData()}</div>
     </div>
   );
 }
